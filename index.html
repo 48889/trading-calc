@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타점 계산기</title>
+  <style>
+    body { background-color: #121212; color: #fff; font-family: sans-serif; padding: 20px; }
+    .card { background: #1e1e1e; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    input { width: 100%; padding: 10px; margin: 6px 0; background: #2a2a2a; border: none; color: #fff; border-radius: 6px; box-sizing: border-box; }
+    .btn-group { display: flex; gap: 8px; margin-top: 8px; }
+    button { flex: 1; padding: 10px; background: #333; color: #fff; border: 1px solid #444; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #555; }
+    .result { font-size: 1.2rem; font-weight: bold; color: #f39c12; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+  <h2>MJ Lastdance 타점 계산기</h2>
+  
+  <div class="card">
+    <label>진입가 ($)</label>
+    <input type="number" id="entry" placeholder="매수/매도 진입 가격" oninput="calculate()">
+    
+    <label>손절가 ($)</label>
+    <input type="number" id="sl" placeholder="손절 가격" oninput="calculate()">
+    
+    <label>리스크 ($)</label>
+    <input type="number" id="risk" placeholder="허용 리스크 (금액 기준)" oninput="calculate()">
+    
+    <div>진입수량: <span id="qty" class="result">-</span></div>
+  </div>
+
+  <div class="card">
+    <label>시드 ($)</label>
+    <input type="number" id="seed" placeholder="총 자본금" oninput="calculate()">
+    <p style="font-size: 0.8rem; color: #888;">시드 입력 후 리스크 % 버튼을 누르면 위 리스크가 자동 입력됩니다.</p>
+    
+    <div class="btn-group">
+      <button onclick="setRiskPercent(1)">1%</button>
+      <button onclick="setRiskPercent(2)">2%</button>
+      <button onclick="setRiskPercent(3)">3%</button>
+      <button onclick="setRiskPercent(4)">4%</button>
+      <button onclick="setRiskPercent(5)">5%</button>
+    </div>
+  </div>
+
+  <script>
+    function setRiskPercent(percent) {
+      const seed = parseFloat(document.getElementById('seed').value) || 0;
+      const riskAmount = seed * (percent / 100);
+      document.getElementById('risk').value = riskAmount;
+      calculate();
+    }
+
+    function calculate() {
+      const entry = parseFloat(document.getElementById('entry').value) || 0;
+      const sl = parseFloat(document.getElementById('sl').value) || 0;
+      const risk = parseFloat(document.getElementById('risk').value) || 0;
+
+      const diff = Math.abs(entry - sl);
+      if (entry > 0 && sl > 0 && risk > 0 && diff > 0) {
+        const qty = risk / diff;
+        document.getElementById('qty').innerText = qty.toFixed(4);
+      } else {
+        document.getElementById('qty').innerText = '-';
+      }
+    }
+  </script>
+</body>
+</html>
